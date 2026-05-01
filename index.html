@@ -1,0 +1,1233 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="VocaTest Pro">
+<meta name="theme-color" content="#1A1A2E">
+<title>VocaTest Pro — Test Vocacional</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+:root{
+  --azul:#16213E;--azul2:#0F3460;--acento:#E94560;--acento2:#533483;
+  --verde:#0B8457;--verde-l:#D4EFDF;
+  --morado:#533483;--morado-l:#EAE4F5;
+  --naranja:#E67E22;--naranja-l:#FDEBD0;
+  --teal:#0F7173;--teal-l:#D0ECF0;
+  --rosa:#C0392B;--rosa-l:#FADBD8;
+  --dorado:#9B7F12;--dorado-l:#FEF9E7;
+  --gris:#F5F6FA;--gris2:#E8ECF0;--gris3:#B2BEC3;
+  --texto:#2D3436;--texto2:#636E72;--blanco:#FFFFFF;
+  --radio:14px;--radio-sm:8px;
+}
+html,body{height:100%;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:#F0F2F8;color:var(--texto);font-size:16px;overflow-x:hidden}
+#app{min-height:100vh;display:flex;flex-direction:column;max-width:480px;margin:0 auto;background:var(--blanco);position:relative}
+
+/* PANTALLAS */
+.pantalla{display:none;flex-direction:column;min-height:100vh}
+.pantalla.activa{display:flex}
+
+/* SPLASH */
+#p-splash{background:var(--azul);align-items:center;justify-content:center;gap:0;padding:0;position:relative;overflow:hidden}
+.splash-bg{position:absolute;inset:0;background:linear-gradient(145deg,#1A1A2E 0%,#16213E 50%,#0F3460 100%)}
+.splash-orb{position:absolute;width:300px;height:300px;border-radius:50%;background:radial-gradient(circle,rgba(233,69,96,0.15) 0%,transparent 70%);top:-80px;right:-80px}
+.splash-orb2{position:absolute;width:200px;height:200px;border-radius:50%;background:radial-gradient(circle,rgba(83,52,131,0.2) 0%,transparent 70%);bottom:100px;left:-60px}
+.splash-content{position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;gap:20px;padding:40px 24px;width:100%}
+.logo-wrap{width:80px;height:80px;background:linear-gradient(135deg,var(--acento),var(--acento2));border-radius:24px;display:flex;align-items:center;justify-content:center;font-size:36px}
+.splash-titulo{font-size:30px;font-weight:700;color:#fff;letter-spacing:-0.5px;text-align:center}
+.splash-sub{font-size:14px;color:rgba(255,255,255,0.7);text-align:center;line-height:1.7;max-width:300px}
+.chips{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin-top:4px}
+.chip{background:rgba(255,255,255,0.1);color:rgba(255,255,255,0.8);border:1px solid rgba(255,255,255,0.15);border-radius:20px;padding:4px 12px;font-size:11px}
+.btn-grad{background:linear-gradient(135deg,var(--acento),var(--acento2));color:#fff;border:none;border-radius:var(--radio);padding:15px 28px;font-size:16px;font-weight:600;cursor:pointer;width:100%;max-width:300px;letter-spacing:0.2px}
+.btn-ghost{background:rgba(255,255,255,0.08);color:rgba(255,255,255,0.85);border:1px solid rgba(255,255,255,0.2);border-radius:var(--radio);padding:12px 28px;font-size:14px;font-weight:500;cursor:pointer;width:100%;max-width:300px}
+.splash-nota{font-size:11px;color:rgba(255,255,255,0.4);margin-top:4px;text-align:center}
+
+/* NAV */
+.nav{padding:14px 16px;display:flex;align-items:center;gap:10px;position:sticky;top:0;z-index:100;background:var(--blanco);border-bottom:1px solid var(--gris2)}
+.nav-back{background:none;border:none;color:var(--texto2);font-size:20px;cursor:pointer;padding:4px 8px;display:none;border-radius:8px}
+.nav-back:hover{background:var(--gris)}
+.nav-titulo{font-size:16px;font-weight:600;flex:1;color:var(--texto)}
+
+/* REGISTRO */
+.reg-header{background:linear-gradient(135deg,var(--azul2),var(--acento2));padding:24px 20px;color:#fff}
+.reg-header h2{font-size:20px;font-weight:700;margin-bottom:4px}
+.reg-header p{font-size:13px;opacity:0.8;line-height:1.6}
+.contenido{padding:20px 16px;flex:1}
+.campo{margin-bottom:14px}
+.campo label{font-size:13px;font-weight:500;color:var(--texto2);display:block;margin-bottom:6px}
+.campo input,.campo select{width:100%;padding:13px 14px;border:1.5px solid var(--gris2);border-radius:var(--radio-sm);font-size:15px;color:var(--texto);background:var(--blanco);transition:border-color .2s;-webkit-appearance:none}
+.campo input:focus,.campo select:focus{outline:none;border-color:var(--acento2);box-shadow:0 0 0 3px rgba(83,52,131,0.08)}
+.info-pill{background:var(--morado-l);border-radius:var(--radio-sm);padding:12px 14px;margin-bottom:16px;font-size:13px;color:var(--morado);line-height:1.6}
+.btn-main{width:100%;padding:14px;background:linear-gradient(135deg,var(--azul2),var(--acento2));color:#fff;border:none;border-radius:var(--radio);font-size:15px;font-weight:600;cursor:pointer}
+
+/* BARRA DE PROGRESO */
+.prog-wrap{padding:12px 16px;background:var(--blanco);border-bottom:1px solid var(--gris2);position:sticky;top:0;z-index:10}
+.prog-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
+.prog-seccion{font-size:12px;font-weight:600;color:var(--texto2)}
+.prog-pct{font-size:13px;font-weight:700;color:var(--acento2)}
+.prog-track{height:5px;background:var(--gris2);border-radius:3px;overflow:hidden}
+.prog-fill{height:100%;background:linear-gradient(90deg,var(--acento2),var(--acento));border-radius:3px;transition:width .4s}
+.steps-wrap{display:flex;gap:3px;margin-top:6px}
+.step-dot{height:3px;flex:1;border-radius:2px;background:var(--gris2);transition:background .3s}
+.step-dot.done{background:var(--acento2)}
+.step-dot.activo{background:var(--acento)}
+
+/* TIPO BANNER */
+.tipo-banner{margin:16px;border-radius:var(--radio);padding:14px 16px;display:flex;align-items:flex-start;gap:12px}
+.tipo-icon{width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
+.tipo-info h3{font-size:15px;font-weight:600;margin-bottom:3px}
+.tipo-info p{font-size:12px;line-height:1.5;opacity:0.85}
+.tipo-badge-mini{display:inline-block;font-size:10px;font-weight:600;border-radius:4px;padding:2px 7px;margin-bottom:4px;text-transform:uppercase;letter-spacing:0.4px}
+
+/* PREGUNTAS */
+.pregunta-wrap{padding:0 16px 12px}
+.pregunta-card{background:var(--blanco);border:1.5px solid var(--gris2);border-radius:var(--radio);padding:16px;margin-bottom:10px;transition:border-color .2s}
+.pregunta-card.respondida{border-color:var(--gris3)}
+.pregunta-meta{display:flex;align-items:center;gap:6px;margin-bottom:8px}
+.pregunta-num{font-size:11px;font-weight:600;color:var(--gris3)}
+.pregunta-tipo-badge{font-size:10px;padding:2px 8px;border-radius:4px;font-weight:600}
+.pregunta-texto{font-size:14px;line-height:1.65;color:var(--texto);margin-bottom:12px}
+.pregunta-situacion{background:var(--gris);border-left:3px solid var(--acento2);border-radius:0 var(--radio-sm) var(--radio-sm) 0;padding:10px 12px;margin-bottom:12px;font-size:13px;line-height:1.6;color:var(--texto2);font-style:italic}
+
+/* ESCALA LIKERT */
+.likert-wrap{display:flex;gap:5px}
+.likert-btn{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;padding:8px 2px;border:1.5px solid var(--gris2);border-radius:var(--radio-sm);cursor:pointer;background:var(--blanco);transition:all .15s;min-height:52px}
+.likert-num{font-size:14px;font-weight:600;color:var(--texto2)}
+.likert-lbl{font-size:8px;text-align:center;line-height:1.3;color:var(--gris3)}
+.likert-btn.sel .likert-num{color:var(--blanco)}
+.likert-btn.sel .likert-lbl{color:rgba(255,255,255,0.8)}
+
+/* OPCIÓN MÚLTIPLE */
+.opciones-lista{display:flex;flex-direction:column;gap:6px}
+.opcion-multi{padding:11px 14px;border:1.5px solid var(--gris2);border-radius:var(--radio-sm);font-size:13px;cursor:pointer;color:var(--texto);background:var(--blanco);text-align:left;line-height:1.5;transition:all .15s}
+.opcion-multi.sel{border-width:2px;font-weight:500}
+.opcion-multi:hover{background:var(--gris)}
+
+/* PARES (forced choice) */
+.pares-wrap{display:flex;flex-direction:column;gap:8px}
+.par-opcion{padding:13px 16px;border:1.5px solid var(--gris2);border-radius:var(--radio-sm);font-size:13px;cursor:pointer;color:var(--texto);background:var(--blanco);text-align:left;line-height:1.5;display:flex;align-items:center;gap:10px;transition:all .15s}
+.par-opcion.sel{border-width:2px;font-weight:500}
+.par-letra{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0;background:var(--gris2);color:var(--texto2)}
+.par-opcion.sel .par-letra{color:#fff}
+
+/* NAV TEST */
+.nav-test{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:480px;background:var(--blanco);border-top:1px solid var(--gris2);padding:12px 16px;display:flex;gap:10px;z-index:50}
+.btn-ant{flex:1;padding:12px;border:1.5px solid var(--gris2);border-radius:var(--radio);font-size:14px;font-weight:500;cursor:pointer;background:var(--blanco);color:var(--texto)}
+.btn-sig{flex:2;padding:12px;border:none;border-radius:var(--radio);font-size:15px;font-weight:600;cursor:pointer;background:linear-gradient(135deg,var(--azul2),var(--acento2));color:#fff}
+.alerta-inc{background:#FEF9E7;border:1px solid var(--dorado);border-radius:var(--radio-sm);padding:10px 14px;font-size:13px;color:#7D6608;margin:0 16px 10px;display:none}
+
+/* RESULTADOS */
+.res-header{background:linear-gradient(145deg,var(--azul) 0%,var(--azul2) 60%,var(--acento2) 100%);color:#fff;padding:28px 20px;text-align:center;position:relative;overflow:hidden}
+.res-orb{position:absolute;width:200px;height:200px;border-radius:50%;background:rgba(233,69,96,0.15);top:-60px;right:-60px}
+.res-nombre{font-size:13px;opacity:0.75;margin-bottom:4px;position:relative}
+.res-titulo{font-size:22px;font-weight:700;margin-bottom:12px;position:relative}
+.codigo-wrap{display:flex;gap:8px;justify-content:center;margin:10px 0;position:relative}
+.codigo-letra{border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:700;background:rgba(255,255,255,0.15)}
+.alerta-consistencia{background:rgba(233,69,96,0.15);border:1px solid rgba(233,69,96,0.4);border-radius:8px;padding:10px 14px;font-size:12px;color:#fff;margin-top:10px;position:relative;text-align:left;line-height:1.6}
+.res-body{padding:16px;padding-bottom:90px}
+.tarjeta{background:var(--blanco);border:1.5px solid var(--gris2);border-radius:var(--radio);padding:14px;margin-bottom:12px}
+.tarjeta-titulo{font-size:12px;font-weight:700;color:var(--texto2);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:12px}
+.bar-row{display:flex;align-items:center;gap:8px;margin-bottom:8px}
+.bar-label{font-size:12px;width:90px;flex-shrink:0;font-weight:600}
+.bar-track{flex:1;height:20px;background:var(--gris2);border-radius:10px;overflow:hidden;position:relative}
+.bar-fill{height:100%;border-radius:10px;transition:width 1s cubic-bezier(.16,1,.3,1);position:relative}
+.bar-val{font-size:11px;font-weight:700;width:32px;text-align:right;flex-shrink:0}
+.interp-box{border-radius:var(--radio);padding:16px;margin-bottom:12px}
+.interp-nivel{font-size:16px;font-weight:700;margin-bottom:4px}
+.interp-pts{font-size:12px;opacity:0.8;margin-bottom:8px}
+.interp-rec{font-size:13px;line-height:1.7}
+.carrera-card{border-radius:var(--radio-sm);padding:12px;margin-bottom:8px;border-left:4px solid}
+.carrera-tipo{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.4px;margin-bottom:4px}
+.carrera-nombre{font-size:13px;font-weight:600;margin-bottom:4px}
+.carrera-lista{font-size:12px;line-height:1.7;opacity:0.85}
+.carrera-porque{font-size:11px;margin-top:6px;opacity:0.8;font-style:italic;line-height:1.5}
+.stat-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px}
+.stat-card{background:var(--gris);border-radius:var(--radio-sm);padding:10px;text-align:center}
+.stat-lbl{font-size:10px;color:var(--texto2);margin-bottom:3px}
+.stat-val{font-size:18px;font-weight:700;color:var(--azul2)}
+.badge-alerta{background:var(--naranja-l);color:var(--naranja);border-radius:var(--radio-sm);padding:8px 12px;font-size:12px;line-height:1.6;margin-bottom:8px}
+.fortaleza-pill{display:inline-block;padding:5px 12px;border-radius:20px;font-size:12px;font-weight:500;margin:3px;border:1.5px solid}
+.btn-accion{width:100%;padding:14px;border-radius:var(--radio);font-size:15px;font-weight:600;cursor:pointer;margin-bottom:10px;border:none}
+.btn-nuevo{background:linear-gradient(135deg,var(--azul2),var(--acento2));color:#fff}
+.btn-or{background:var(--gris);color:var(--texto);border:1.5px solid var(--gris2)}
+.seccion-separador{background:var(--gris);padding:8px 16px;font-size:11px;font-weight:600;color:var(--texto2);text-transform:uppercase;letter-spacing:0.5px;margin:4px 0}
+
+/* ORIENTADOR */
+.est-item{display:flex;align-items:center;gap:10px;padding:12px;border:1.5px solid var(--gris2);border-radius:var(--radio);margin-bottom:8px;cursor:pointer;background:var(--blanco)}
+.est-avatar{width:40px;height:40px;border-radius:50%;background:var(--morado-l);color:var(--morado);display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;flex-shrink:0}
+.est-info{flex:1;min-width:0}
+.est-nombre{font-size:14px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.est-meta{font-size:11px;color:var(--texto2);margin-top:2px}
+.est-codigo{font-size:13px;font-weight:700}
+.alerta-inc-or{font-size:12px;color:var(--naranja);margin-top:2px}
+.badge-empty{text-align:center;padding:48px 20px;color:var(--texto2)}
+.tab-wrap{display:flex;border-bottom:2px solid var(--gris2);margin-bottom:16px}
+.tab{flex:1;padding:10px;text-align:center;font-size:13px;font-weight:500;color:var(--texto2);cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-2px}
+.tab.activo{color:var(--acento2);border-bottom-color:var(--acento2);font-weight:700}
+.toast{position:fixed;bottom:90px;left:50%;transform:translateX(-50%);background:var(--texto);color:#fff;padding:10px 18px;border-radius:var(--radio);font-size:13px;z-index:300;opacity:0;transition:opacity .3s;pointer-events:none}
+.toast.show{opacity:1}
+@keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+.anim{animation:fadeUp .25s ease}
+</style>
+</head>
+<body>
+<div id="app">
+
+<!-- SPLASH -->
+<div class="pantalla activa" id="p-splash">
+  <div class="splash-bg"></div>
+  <div class="splash-orb"></div>
+  <div class="splash-orb2"></div>
+  <div class="splash-content">
+    <div class="logo-wrap">🎯</div>
+    <div class="splash-titulo">VocaTest Pro</div>
+    <div class="splash-sub">Un test vocacional diseñado para darte resultados honestos y útiles — no solo decirte lo que quieres escuchar.</div>
+    <div class="chips">
+      <span class="chip">60 preguntas</span>
+      <span class="chip">Basado en RIASEC</span>
+      <span class="chip">Sin sesgos</span>
+      <span class="chip">15 min</span>
+    </div>
+    <button class="btn-grad" onclick="ir('p-registro')" style="margin-top:8px">Comenzar test</button>
+    <button class="btn-ghost" onclick="abrirPin()">Panel del orientador 🔒</button>
+    <div class="splash-nota">VocaTest Pro v2.0 · Preparatoria / Bachillerato</div>
+  </div>
+</div>
+
+<!-- REGISTRO -->
+<div class="pantalla" id="p-registro">
+  <div class="reg-header">
+    <h2>Cuéntanos sobre ti</h2>
+    <p>Esta información nos ayuda a personalizar tus resultados. Solo la usamos para el test.</p>
+  </div>
+  <div class="contenido">
+    <div class="campo"><label>Nombre completo</label><input id="r-nombre" type="text" placeholder="Tu nombre..."></div>
+    <div class="campo"><label>Edad</label><input id="r-edad" type="number" placeholder="16" min="13" max="20"></div>
+    <div class="campo"><label>Grado escolar</label>
+      <select id="r-grado"><option value="">Selecciona...</option>
+        <option>1° Preparatoria</option><option>2° Preparatoria</option><option>3° Preparatoria</option>
+        <option>4° Preparatoria</option><option>5° Preparatoria</option><option>6° Preparatoria</option>
+      </select>
+    </div>
+    <div class="campo"><label>Escuela / Plantel</label><input id="r-escuela" type="text" placeholder="Nombre de tu escuela..."></div>
+    <div class="campo"><label>¿Cómo calificas tu situación económica familiar?</label>
+      <select id="r-socio"><option value="">Selecciona...</option>
+        <option value="baja">Baja (recursos limitados)</option>
+        <option value="media-baja">Media-baja</option>
+        <option value="media">Media</option>
+        <option value="media-alta">Media-alta</option>
+        <option value="alta">Alta</option>
+      </select>
+    </div>
+    <div class="info-pill">
+      <strong>¿Por qué preguntamos esto?</strong><br>
+      Tu contexto económico es real y afecta tus opciones. Te mostraremos carreras que se ajusten a tu situación, incluyendo becas, opciones técnicas y universitarias. No hay respuesta buena ni mala.
+    </div>
+    <div class="campo"><label>¿Tienes alguna carrera o área en mente?</label><input id="r-idea" type="text" placeholder="Ej: medicina, diseño, nada aún... (opcional)"></div>
+    <button class="btn-main" onclick="iniciarTest()">Comenzar el test →</button>
+  </div>
+</div>
+
+<!-- TEST -->
+<div class="pantalla" id="p-test">
+  <div class="prog-wrap">
+    <div class="prog-top">
+      <span class="prog-seccion" id="prog-lbl">Bloque 1 de 5</span>
+      <span class="prog-pct" id="prog-pct">0%</span>
+    </div>
+    <div class="prog-track"><div class="prog-fill" id="prog-fill" style="width:0%"></div></div>
+    <div class="steps-wrap" id="steps-wrap"></div>
+  </div>
+  <div id="contenido-test" style="padding-bottom:90px"></div>
+  <div class="alerta-inc" id="alerta">⚠️ Responde todas las preguntas de este bloque para continuar.</div>
+  <div class="nav-test">
+    <button class="btn-ant" id="btn-ant" onclick="anterior()" disabled>← Atrás</button>
+    <button class="btn-sig" id="btn-sig" onclick="siguiente()">Siguiente →</button>
+  </div>
+</div>
+
+<!-- RESULTADOS -->
+<div class="pantalla" id="p-resultado">
+  <div id="res-header-wrap"></div>
+  <div class="res-body" id="res-body"></div>
+</div>
+
+<!-- PIN -->
+<div class="pantalla" id="p-pin">
+  <div class="nav"><button class="nav-back" onclick="ir('p-splash')" style="display:block">←</button><span class="nav-titulo">Acceso al orientador</span></div>
+  <div style="display:flex;flex-direction:column;align-items:center;padding:32px 24px;flex:1">
+    <div style="width:64px;height:64px;background:var(--morado-l);border-radius:20px;display:flex;align-items:center;justify-content:center;font-size:28px;margin-bottom:20px">🔐</div>
+    <div style="font-size:18px;font-weight:600;margin-bottom:6px;text-align:center">Panel del orientador</div>
+    <div style="font-size:13px;color:var(--texto2);text-align:center;line-height:1.6;margin-bottom:28px" id="pin-subtitulo">Ingresa el PIN de 6 dígitos para acceder.<br>Solo el orientador o docente debe conocerlo.</div>
+    <div style="display:flex;gap:10px;margin-bottom:28px" id="pin-dots"></div>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;width:100%;max-width:260px" id="pin-teclado"></div>
+    <div style="font-size:12px;color:var(--acento);margin-top:20px;text-align:center;display:none" id="pin-error">PIN incorrecto. Intenta de nuevo.</div>
+    <div style="font-size:12px;color:var(--texto2);margin-top:28px;text-align:center;line-height:1.6" id="pin-ayuda"></div>
+  </div>
+</div>
+
+<!-- ORIENTADOR -->
+<div class="pantalla" id="p-orientador">
+  <div class="nav"><button class="nav-back" onclick="ir('p-splash')" style="display:block">←</button><span class="nav-titulo">Panel del orientador</span><button onclick="cambiarPin()" style="background:none;border:none;font-size:12px;color:var(--acento2);cursor:pointer;font-weight:600;padding:4px 8px">🔑 PIN</button></div>
+  <div class="contenido">
+    <div class="tab-wrap">
+      <div class="tab activo" onclick="tabOr('lista',this)">Estudiantes</div>
+      <div class="tab" onclick="tabOr('stats',this)">Estadísticas</div>
+    </div>
+    <div id="tab-lista"><input type="text" placeholder="Buscar..." id="buscador" oninput="renderLista()" style="width:100%;padding:10px;border:1.5px solid var(--gris2);border-radius:var(--radio-sm);font-size:14px;margin-bottom:12px"><div id="lista-est"></div></div>
+    <div id="tab-stats" style="display:none"><div id="stats-or"></div></div>
+  </div>
+</div>
+
+<!-- DETALLE -->
+<div class="pantalla" id="p-detalle">
+  <div class="nav"><button class="nav-back" onclick="ir('p-orientador');renderLista()" style="display:block">←</button><span class="nav-titulo" id="det-titulo">Resultados</span></div>
+  <div id="det-header"></div>
+  <div class="res-body" id="det-body" style="padding-bottom:90px"></div>
+  <div style="position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:480px;background:#fff;border-top:1px solid var(--gris2);padding:12px 16px;z-index:50">
+    <button class="btn-accion" style="background:var(--rosa-l);color:var(--rosa);margin:0;border:1.5px solid var(--rosa)" onclick="eliminarEst()">Eliminar este registro</button>
+  </div>
+</div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+/* ─── DATOS DE TIPOS RIASEC ─── */
+const TIPOS = {
+  R:{n:"Realista",icon:"🔧",c:"#0B8457",l:"#D4EFDF",
+     desc:"Práctico, concreto, orientado a lo físico y técnico. Aprende haciendo.",
+     fortalezas:["Pensamiento práctico","Habilidad manual","Orientación a resultados","Resolución técnica de problemas"],
+     carreras:[
+       {n:"Ingeniería y tecnología aplicada",lista:"Ing. Mecánica, Ing. Civil, Ing. Industrial, Arquitectura, Geología, Topografía",porque:"Tu perfil realista indica que disfrutas aplicar conocimientos de manera concreta y ver resultados tangibles."},
+       {n:"Ciencias agropecuarias y ambientales",lista:"Agronomía, Biología de campo, Ingeniería Ambiental, Veterinaria",porque:"Combinas lo práctico con lo natural, ideal para carreras que trabajan directamente con el entorno."},
+       {n:"Carreras técnicas y tecnólogos",lista:"Técnico en Electrónica, Mecatrónica, Construcción, Piloto Aviador",porque:"Si el acceso a universidad es limitado, estas opciones tienen alta demanda y buenos salarios."},
+     ]},
+  I:{n:"Investigativo",icon:"🔬",c:"#0F3460",l:"#D6EAF8",
+     desc:"Analítico, curioso, orientado al pensamiento lógico y científico. Ama entender el 'por qué'.",
+     fortalezas:["Análisis y pensamiento crítico","Resolución de problemas complejos","Aprendizaje autónomo","Razonamiento lógico-matemático"],
+     carreras:[
+       {n:"Ciencias de la salud",lista:"Medicina, Psicología, Nutrición, Biotecnología, Bioquímica",porque:"Tu perfil investigativo encaja con el rigor científico y la búsqueda constante de conocimiento que exigen estas carreras."},
+       {n:"Ciencias exactas y naturales",lista:"Matemáticas, Física, Química, Estadística, Astronomía",porque:"Disfrutas los problemas sin respuesta fácil y tienes tolerancia alta a la complejidad."},
+       {n:"Tecnología e ingeniería de sistemas",lista:"Ing. en Sistemas, Ciencias de la Computación, Inteligencia Artificial, Ciberseguridad",porque:"La lógica y la investigación son el corazón de estas disciplinas de alta demanda laboral."},
+     ]},
+  A:{n:"Artístico",icon:"🎨",c:"#533483",l:"#EAE4F5",
+     desc:"Creativo, expresivo, valora la originalidad y la libertad. Piensa fuera del molde.",
+     fortalezas:["Pensamiento creativo","Sensibilidad estética","Comunicación expresiva","Innovación y originalidad"],
+     carreras:[
+       {n:"Diseño y comunicación visual",lista:"Diseño Gráfico, Diseño de Modas, Animación Digital, Fotografía, UX/UI Design",porque:"Tu perfil artístico indica una visión estética natural y capacidad de comunicar ideas visualmente."},
+       {n:"Artes, medios y entretenimiento",lista:"Cine, Teatro, Música, Producción Audiovisual, Literatura, Comunicación",porque:"Necesitas espacios donde la expresión creativa sea el centro de tu trabajo, no un extra."},
+       {n:"Arquitectura y diseño del espacio",lista:"Arquitectura, Diseño de Interiores, Urbanismo, Diseño Industrial",porque:"Combina el pensamiento creativo con la precisión técnica — ideal para perfiles artísticos con habilidades espaciales."},
+     ]},
+  S:{n:"Social",icon:"🤝",c:"#C0392B",l:"#FADBD8",
+     desc:"Empático, colaborativo, orientado a las personas. Encuentra sentido en ayudar.",
+     fortalezas:["Empatía y escucha activa","Comunicación interpersonal","Trabajo en equipo","Orientación al bienestar de otros"],
+     carreras:[
+       {n:"Educación y pedagogía",lista:"Docencia, Pedagogía, Educación Especial, Orientación Educativa, Psicopedagogía",porque:"Tu disposición natural a enseñar y acompañar a otros es el núcleo de estas profesiones."},
+       {n:"Salud y bienestar humano",lista:"Enfermería, Terapia Física, Trabajo Social, Medicina, Nutrición Clínica",porque:"Tu perfil social indica alta motivación por el impacto directo en la vida de las personas."},
+       {n:"Ciencias sociales y humanidades",lista:"Psicología, Sociología, Antropología, Derecho, Comunicación Social",porque:"Disfrutas entender a las personas y las sociedades, y quieres contribuir a mejorarlas."},
+     ]},
+  E:{n:"Emprendedor",icon:"🚀",c:"#B7950B",l:"#FEF9E7",
+     desc:"Ambicioso, persuasivo, orientado al liderazgo. Disfruta influir y tomar decisiones.",
+     fortalezas:["Liderazgo e influencia","Comunicación persuasiva","Orientación a metas","Tolerancia al riesgo"],
+     carreras:[
+       {n:"Administración y negocios",lista:"Administración de Empresas, Mercadotecnia, Negocios Internacionales, Gestión Empresarial",porque:"Tu perfil emprendedor es el motor de estas carreras — aquí el liderazgo y la ambición son ventajas reales."},
+       {n:"Derecho y relaciones institucionales",lista:"Derecho, Relaciones Internacionales, Ciencias Políticas, Diplomacia",porque:"La capacidad de persuadir, negociar y liderar son habilidades centrales en estas disciplinas."},
+       {n:"Finanzas y economía",lista:"Economía, Finanzas, Actuaría, Banca y Bolsa de Valores",porque:"Tu orientación a resultados y metas encaja con el mundo cuantitativo y competitivo de las finanzas."},
+     ]},
+  C:{n:"Convencional",icon:"📊",c:"#0F7173",l:"#D0ECF0",
+     desc:"Metódico, ordenado, preciso. Se siente seguro con estructuras claras y datos verificables.",
+     fortalezas:["Atención al detalle","Organización y planeación","Precisión y rigor","Manejo de información"],
+     carreras:[
+       {n:"Contabilidad y finanzas",lista:"Contabilidad, Auditoría, Finanzas, Actuaría, Administración Fiscal",porque:"Tu perfil convencional es ideal para profesiones que requieren exactitud, orden y manejo sistemático de datos."},
+       {n:"Informática y sistemas de información",lista:"Informática Administrativa, Sistemas de Información, Bases de Datos, Análisis de Datos",porque:"Disfrutas organizar información de forma lógica — las tecnologías de datos son el futuro laboral de este perfil."},
+       {n:"Administración y recursos humanos",lista:"Administración, Recursos Humanos, Logística, Gestión de Calidad",porque:"Tu capacidad de mantener orden y procesos claros es una ventaja competitiva real en estas áreas."},
+     ]},
+};
+
+/* ─── BLOQUES DEL TEST (60 preguntas, 5 bloques) ─── */
+/* Tipos de pregunta: likert, situacional, forzada */
+const BLOQUES = [
+{
+  id:"B1", titulo:"Bloque 1 — ¿Qué te mueve?",
+  descripcion:"Preguntas sobre lo que naturalmente disfrutas y te llama la atención.",
+  color:"#0F3460", colorL:"#D6EAF8",
+  preguntas:[
+    // Intereses directos — formato likert
+    {id:"q1",tipo:"R",fmt:"likert",texto:"Disfruto armar, reparar o construir cosas con mis manos."},
+    {id:"q2",tipo:"I",fmt:"likert",texto:"Me fascina entender por qué ocurren las cosas, no solo saber que ocurren."},
+    {id:"q3",tipo:"A",fmt:"likert",texto:"Cuando tengo tiempo libre, me atraen las actividades creativas o artísticas."},
+    {id:"q4",tipo:"S",fmt:"likert",texto:"Me da satisfacción ayudar a alguien a resolver un problema personal o emocional."},
+    {id:"q5",tipo:"E",fmt:"likert",texto:"Me emociona la idea de tener mi propio negocio o liderar un equipo."},
+    {id:"q6",tipo:"C",fmt:"likert",texto:"Disfruto organizar información, archivar datos o llevar registros con precisión."},
+    // Situacionales — anti-sesgo
+    {id:"q7",tipo:"RI",fmt:"situacional",
+     contexto:"Tienes un fin de semana libre sin compromisos.",
+     texto:"¿Qué harías probablemente?",
+     opciones:[
+       {txt:"Arreglar algo en casa o aprender a usar una herramienta nueva",val:{R:4,I:1}},
+       {txt:"Investigar un tema que me ha generado curiosidad leyendo o viendo videos",val:{I:4,R:1}},
+       {txt:"Crear algo: dibujar, escribir, hacer música o diseñar algo",val:{A:4,S:1}},
+       {txt:"Estar con amigos o familia, o hacer algo por alguien que lo necesita",val:{S:4,E:1}},
+     ]},
+    {id:"q8",tipo:"EA",fmt:"situacional",
+     contexto:"Te piden organizar un evento escolar.",
+     texto:"¿Qué rol preferirías tener?",
+     opciones:[
+       {txt:"Líder: organizar al equipo, tomar decisiones y hablar frente al grupo",val:{E:5,S:1}},
+       {txt:"Creativo: diseñar la ambientación, el cartel o el concepto del evento",val:{A:5,I:1}},
+       {txt:"Apoyo logístico: llevar el control de materiales, tiempos y tareas",val:{C:5,R:1}},
+       {txt:"Asistente social: asegurarme que todos participen y nadie quede fuera",val:{S:5,E:1}},
+     ]},
+    {id:"q9",tipo:"IC",fmt:"situacional",
+     contexto:"Tu maestro te da a elegir el tipo de proyecto final.",
+     texto:"¿Cuál elegirías?",
+     opciones:[
+       {txt:"Experimento científico o investigación con datos",val:{I:5,C:1}},
+       {txt:"Maqueta o construcción de algo funcional",val:{R:5,I:1}},
+       {txt:"Obra de arte, cuento, video o composición musical",val:{A:5,S:1}},
+       {txt:"Campaña de concientización o proyecto de impacto social",val:{S:5,E:2}},
+     ]},
+    // Forzada — revela preferencia real
+    {id:"q10",tipo:"RS",fmt:"forzada",
+     texto:"Si tuvieras que elegir una sola, ¿cuál preferirías?",
+     opciones:[
+       {txt:"Trabajar con herramientas, máquinas o en espacios físicos",val:{R:5}},
+       {txt:"Trabajar directamente con personas, apoyando o enseñando",val:{S:5}},
+     ]},
+    {id:"q11",tipo:"IE",fmt:"forzada",
+     texto:"¿Cuál de estos logros te haría sentir más orgulloso/a?",
+     opciones:[
+       {txt:"Descubrir o demostrar algo que nadie había probado antes",val:{I:5}},
+       {txt:"Crear una empresa que genere empleos y crezca rápidamente",val:{E:5}},
+     ]},
+    {id:"q12",tipo:"AC",fmt:"forzada",
+     texto:"Para ti, trabajar bien significa:",
+     opciones:[
+       {txt:"Crear algo original, aunque el proceso sea desordenado",val:{A:5}},
+       {txt:"Seguir un método riguroso y entregar un resultado impecable",val:{C:5}},
+     ]},
+  ]
+},
+{
+  id:"B2", titulo:"Bloque 2 — ¿Cómo eres?",
+  descripcion:"Preguntas sobre tu personalidad y cómo te comportas en distintas situaciones.",
+  color:"#533483", colorL:"#EAE4F5",
+  preguntas:[
+    {id:"q13",tipo:"E",fmt:"likert",texto:"Me siento cómodo/a hablando frente a un grupo y tratando de convencerlos."},
+    {id:"q14",tipo:"I",fmt:"likert",texto:"Prefiero pensar mucho antes de actuar, aunque eso tome más tiempo."},
+    {id:"q15",tipo:"S",fmt:"likert",texto:"Cuando alguien está mal, lo noto rápido y me dan ganas de ayudarlo."},
+    {id:"q16",tipo:"C",fmt:"likert",texto:"El desorden me incomoda genuinamente — prefiero tener todo en su lugar."},
+    {id:"q17",tipo:"R",fmt:"likert",texto:"Soy de las personas que aprenden mejor haciendo que escuchando explicaciones."},
+    {id:"q18",tipo:"A",fmt:"likert",texto:"Necesito espacios donde pueda expresarme y ser creativo/a — las rutinas me limitan."},
+    {id:"q19",tipo:"E",fmt:"likert",texto:"La competencia me motiva — me esfuerzo más cuando hay algo que ganar o demostrar."},
+    {id:"q20",tipo:"I",fmt:"likert",texto:"Los problemas difíciles me atraen más que los fáciles — me gusta el desafío intelectual."},
+    {id:"q21",tipo:"SA",fmt:"situacional",
+     contexto:"Un amigo tuyo está pasando por un momento muy difícil.",
+     texto:"¿Qué haces?",
+     opciones:[
+       {txt:"Me siento con él/ella, escucho sin juzgar y le ofrezco apoyo emocional",val:{S:5,A:1}},
+       {txt:"Le ayudo a analizar el problema y buscar soluciones concretas",val:{I:4,E:1}},
+       {txt:"Lo distraigo con algo divertido o creativo para que desconecte",val:{A:4,S:2}},
+       {txt:"Le sugiero a quién puede acudir o qué recursos puede usar",val:{S:3,C:2}},
+     ]},
+    {id:"q22",tipo:"RE",fmt:"forzada",
+     texto:"¿Cuál describe mejor tu forma de trabajar?",
+     opciones:[
+       {txt:"Me gusta ver el resultado físico de lo que hago, algo concreto y tangible",val:{R:5}},
+       {txt:"Me gusta ver cómo mi trabajo impacta o convence a otras personas",val:{E:5}},
+     ]},
+    {id:"q23",tipo:"IC",fmt:"forzada",
+     texto:"Cuando tienes que tomar una decisión importante, tiendes a:",
+     opciones:[
+       {txt:"Analizar toda la información disponible antes de decidir",val:{I:5,C:2}},
+       {txt:"Seguir mi intuición y actuar con lo que me parece correcto",val:{E:3,A:2}},
+     ]},
+    {id:"q24",tipo:"AS",fmt:"forzada",
+     texto:"En un trabajo en equipo, normalmente yo soy:",
+     opciones:[
+       {txt:"El/la que propone ideas creativas y originales",val:{A:5}},
+       {txt:"El/la que se asegura de que nadie se quede atrás y todos estén bien",val:{S:5}},
+     ]},
+  ]
+},
+{
+  id:"B3", titulo:"Bloque 3 — ¿Qué se te facilita?",
+  descripcion:"Preguntas sobre tus habilidades reales — lo que haces mejor sin esforzarte mucho.",
+  color:"#0B8457", colorL:"#D4EFDF",
+  preguntas:[
+    // Anti-sesgo: situaciones específicas, no "¿eres bueno en X?"
+    {id:"q25",tipo:"I",fmt:"situacional",
+     contexto:"En clase de matemáticas o ciencias.",
+     texto:"¿Cómo te va habitualmente?",
+     opciones:[
+       {txt:"Entiendo los conceptos con facilidad y me van bien",val:{I:5,C:2}},
+       {txt:"Me cuesta pero me esfuerzo y logro buenos resultados",val:{I:2,C:3}},
+       {txt:"No es mi fuerte, prefiero otras materias",val:{I:0,A:2}},
+       {txt:"Depende del tema, hay partes que me gustan y otras no",val:{I:2}},
+     ]},
+    {id:"q26",tipo:"A",fmt:"situacional",
+     contexto:"Alguien te pide que hagas una presentación o expliques algo creativamente.",
+     texto:"¿Cómo reaccionas?",
+     opciones:[
+       {txt:"Me emociona — disfruto buscar formas creativas de comunicar ideas",val:{A:5,E:2}},
+       {txt:"Lo hago bien pero no es lo que más disfruto",val:{E:2,C:1}},
+       {txt:"Me da algo de nervios pero me esfuerzo y sale bien",val:{S:2,E:1}},
+       {txt:"Prefiero hacerlo de forma directa y clara, sin mucho adorno",val:{C:3,I:1}},
+     ]},
+    {id:"q27",tipo:"S",fmt:"likert",texto:"Se me da natural explicar cosas de forma que otros las entiendan fácilmente."},
+    {id:"q28",tipo:"R",fmt:"likert",texto:"Tengo buena coordinación manual y facilidad para usar herramientas o aparatos."},
+    {id:"q29",tipo:"C",fmt:"likert",texto:"Soy bueno/a detectando errores, inconsistencias o detalles que otros no notan."},
+    {id:"q30",tipo:"E",fmt:"likert",texto:"Se me facilita convencer a otros — cuando defiendo algo, las personas me escuchan."},
+    {id:"q31",tipo:"I",fmt:"likert",texto:"Cuando algo no funciona, disfruto analizar por qué falló en lugar de frustarme."},
+    {id:"q32",tipo:"A",fmt:"likert",texto:"Imaginar escenarios, mundos o conceptos nuevos es algo que hago de forma natural."},
+    {id:"q33",tipo:"CE",fmt:"forzada",
+     texto:"¿En qué tipo de tarea te desempeñas mejor?",
+     opciones:[
+       {txt:"Tareas que requieren precisión, orden y verificar que todo esté correcto",val:{C:5}},
+       {txt:"Tareas que requieren convencer, negociar o influir en personas",val:{E:5}},
+     ]},
+    {id:"q34",tipo:"RI",fmt:"forzada",
+     texto:"¿Cuál de estas habilidades sientes que es más tuya?",
+     opciones:[
+       {txt:"Habilidad para entender cómo funcionan las cosas mecánicas o técnicas",val:{R:5}},
+       {txt:"Habilidad para entender fenómenos complejos y analizarlos a fondo",val:{I:5}},
+     ]},
+    {id:"q35",tipo:"SA",fmt:"forzada",
+     texto:"¿Qué dicen de ti quienes te conocen bien?",
+     opciones:[
+       {txt:"Que soy empático/a, buen/a escuchando y apoyo mucho a los demás",val:{S:5}},
+       {txt:"Que soy original, creativo/a y veo las cosas de forma diferente",val:{A:5}},
+     ]},
+    {id:"q36",tipo:"IE",fmt:"situacional",
+     contexto:"Acabas de terminar un proyecto difícil.",
+     texto:"¿Qué parte fue la más satisfactoria para ti?",
+     opciones:[
+       {txt:"Entender el problema a fondo y encontrar la solución más elegante",val:{I:5}},
+       {txt:"Que el resultado fue mejor que el de los demás",val:{E:4}},
+       {txt:"Que el equipo funcionó bien y todos contribuyeron",val:{S:4}},
+       {txt:"Que quedó organizado, claro y bien presentado",val:{C:4}},
+     ]},
+  ]
+},
+{
+  id:"B4", titulo:"Bloque 4 — ¿Qué valoras?",
+  descripcion:"Preguntas sobre lo que buscas en tu vida profesional futura.",
+  color:"#B7950B", colorL:"#FEF9E7",
+  preguntas:[
+    {id:"q37",tipo:"S",fmt:"likert",texto:"Para mí es importante que mi trabajo sirva para mejorar la vida de otras personas."},
+    {id:"q38",tipo:"E",fmt:"likert",texto:"Quiero tener una profesión con reconocimiento social y buena remuneración económica."},
+    {id:"q39",tipo:"A",fmt:"likert",texto:"Necesito un trabajo donde pueda expresarme y tener libertad creativa — sin eso me sentiría atrapado/a."},
+    {id:"q40",tipo:"C",fmt:"likert",texto:"Prefiero un empleo estable y predecible antes que uno con mucha incertidumbre, aunque sea más emocionante."},
+    {id:"q41",tipo:"I",fmt:"likert",texto:"Lo más satisfactorio de un trabajo sería seguir aprendiendo toda la vida y resolver problemas nuevos."},
+    {id:"q42",tipo:"R",fmt:"likert",texto:"Me importa que mi trabajo tenga resultados físicos y concretos que pueda ver y tocar."},
+    {id:"q43",tipo:"contexto",fmt:"situacional",
+     contexto:"Imagina que tienes dos ofertas de trabajo al salir de la carrera.",
+     texto:"¿Cuál elegirías?",
+     opciones:[
+       {txt:"Oferta A: salario alto, mucha presión, viajes constantes, ambiente competitivo",val:{E:5,R:1}},
+       {txt:"Oferta B: salario medio, horario flexible, trabajo creativo, equipo pequeño",val:{A:5,S:2}},
+       {txt:"Oferta C: salario estable, trabajo en gobierno o institución, prestaciones seguras",val:{C:5,S:1}},
+       {txt:"Oferta D: salario variable, investigación y proyectos largos, libertad académica",val:{I:5,A:1}},
+     ]},
+    {id:"q44",tipo:"SE",fmt:"forzada",
+     texto:"¿Qué significa para ti tener éxito profesional?",
+     opciones:[
+       {txt:"Haber ayudado a muchas personas y haber dejado un impacto positivo",val:{S:5}},
+       {txt:"Haber construido algo grande, haber liderado y haber triunfado",val:{E:5}},
+     ]},
+    {id:"q45",tipo:"IC",fmt:"forzada",
+     texto:"¿Preferirías trabajar en un lugar donde:",
+     opciones:[
+       {txt:"Haya pocas reglas y mucha libertad para experimentar y proponer",val:{I:4,A:3}},
+       {txt:"Haya procesos claros, roles definidos y expectativas precisas",val:{C:5,R:2}},
+     ]},
+    {id:"q46",tipo:"RA",fmt:"forzada",
+     texto:"¿Qué tipo de impacto te gustaría tener con tu trabajo?",
+     opciones:[
+       {txt:"Construir o crear algo duradero — una obra, una solución, una infraestructura",val:{R:4,A:2}},
+       {txt:"Expresar algo y que resuene en las personas — cambiar cómo ven el mundo",val:{A:5,S:2}},
+     ]},
+    // Contexto económico — pregunta sensible pero necesaria
+    {id:"q47",tipo:"contexto_ec",fmt:"situacional",
+     contexto:"Pensando en tu situación económica real.",
+     texto:"¿Qué tan importante es para ti que la carrera que estudies tenga rápida inserción laboral?",
+     opciones:[
+       {txt:"Muy importante — necesito trabajar pronto y aportar económicamente",val:{R:3,C:3,E:2}},
+       {txt:"Importante, pero no es lo único — busco equilibrio entre pasión e ingresos",val:{I:2,A:2,S:2}},
+       {txt:"Poco importante — puedo invertir años en estudiar algo que realmente me apasione",val:{I:3,A:3}},
+       {txt:"No sé aún — no he pensado mucho en ese aspecto",val:{}},
+     ]},
+    {id:"q48",tipo:"EI",fmt:"likert",texto:"Me gustaría que mi carrera me permitiera seguir aprendiendo con estudios de posgrado en el futuro."},
+  ]
+},
+{
+  id:"B5", titulo:"Bloque 5 — Verificación",
+  descripcion:"Últimas preguntas para validar tu perfil y detectar sesgos. Responde con total honestidad.",
+  color:"#0F7173", colorL:"#D0ECF0",
+  preguntas:[
+    // Preguntas de validación cruzada — detectan inconsistencias
+    {id:"q49",tipo:"R_val",fmt:"likert",texto:"Si me ofrecieran un trabajo manual bien pagado, lo consideraría seriamente aunque no requiera título universitario."},
+    {id:"q50",tipo:"I_val",fmt:"likert",texto:"Me gusta leer o ver documentales por curiosidad, no solo cuando me lo piden en la escuela."},
+    {id:"q51",tipo:"A_val",fmt:"likert",texto:"Cuando veo una película, un diseño o una canción, pienso en cómo fue hecha y cómo podría hacerse diferente."},
+    {id:"q52",tipo:"S_val",fmt:"likert",texto:"Cuando hay conflicto en un grupo, generalmente termino siendo quien ayuda a que todos se entiendan."},
+    {id:"q53",tipo:"E_val",fmt:"likert",texto:"Me incomoda cuando otros toman decisiones sin consultarme — prefiero tener voz en las cosas importantes."},
+    {id:"q54",tipo:"C_val",fmt:"likert",texto:"Cuando hago algo, siempre reviso al final que todo esté correcto antes de entregarlo."},
+    // Preguntas de deseabilidad social inversa — detectan respuestas automáticas
+    {id:"q55",tipo:"ds1",fmt:"likert",texto:"Hay actividades que nunca me han gustado, aunque sé que socialmente se supone que debería disfrutarlas."},
+    {id:"q56",tipo:"ds2",fmt:"likert",texto:"Tengo áreas donde soy claramente débil o donde me cuesta más que a otros."},
+    // Situacional final — decisión bajo presión real
+    {id:"q57",tipo:"final",fmt:"situacional",
+     contexto:"Ya debes elegir una carrera. No puedes aplazarlo más.",
+     texto:"¿Qué factor pesa más en tu decisión?",
+     opciones:[
+       {txt:"Lo que me apasiona y donde siento que soy bueno/a",val:{A:2,I:2,R:2,S:2,E:2,C:2}},
+       {txt:"Lo que tiene más salida laboral y mejores sueldos",val:{E:3,C:2}},
+       {txt:"Lo que me permita ayudar o impactar positivamente en otros",val:{S:4,I:1}},
+       {txt:"Lo que me piden o esperan mi familia",val:{C:2,S:1}},
+     ]},
+    // Reflexión metacognitiva
+    {id:"q58",tipo:"meta",fmt:"situacional",
+     contexto:"Piensa en lo que respondiste en todo el test.",
+     texto:"¿Qué tan honesto/a fuiste en tus respuestas?",
+     opciones:[
+       {txt:"Muy honesto/a — respondí lo que realmente siento, aunque no suena bien",val:{honesto:5}},
+       {txt:"Bastante honesto/a — en algunas preguntas dudé pero respondí bien",val:{honesto:4}},
+       {txt:"Regular — en algunas preguntas puse lo que sonaba mejor, no lo que siento",val:{honesto:2}},
+       {txt:"Poco honesto/a — respondí pensando en cómo quería verme",val:{honesto:1}},
+     ]},
+    {id:"q59",tipo:"contexto_final",fmt:"forzada",
+     texto:"¿Tienes claro hacia qué área te inclinas, o aún te sientes muy confundido/a?",
+     opciones:[
+       {txt:"Tengo una idea bastante clara — el test confirmó o refinó lo que ya pensaba",val:{claridad:4}},
+       {txt:"Tengo una vaga idea pero aún tengo dudas importantes",val:{claridad:2}},
+     ]},
+    {id:"q60",tipo:"libre",fmt:"situacional",
+     contexto:"Última pregunta.",
+     texto:"¿Qué tan de acuerdo estás con esta frase: 'Estoy dispuesto/a a trabajar duro durante años para dominar el campo que elija'?",
+     opciones:[
+       {txt:"Totalmente — tengo claro que ninguna carrera es fácil y estoy preparado/a",val:{E:2,I:2,R:1}},
+       {txt:"Sí, siempre que sea algo que me apasione de verdad",val:{A:2,S:2,I:1}},
+       {txt:"Depende — si algo se me da natural, sí; si no, lo pensaría",val:{C:1}},
+       {txt:"Aún no lo sé — eso depende de elegir bien",val:{}},
+     ]},
+  ]
+}
+];
+
+let respuestas = {};
+let bloqueActual = 0;
+let alumno = {};
+let estDetalle = null;
+
+function getOffset(bi){return BLOQUES.slice(0,bi).reduce((a,b)=>a+b.preguntas.length,0)}
+
+function ir(id){
+  document.querySelectorAll('.pantalla').forEach(p=>p.classList.remove('activa'));
+  const el=document.getElementById(id);
+  el.classList.add('activa','anim');
+  setTimeout(()=>el.classList.remove('anim'),300);
+  window.scrollTo(0,0);
+}
+
+function toast(msg){
+  const t=document.getElementById('toast');
+  t.textContent=msg;t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),2500);
+}
+
+function iniciarTest(){
+  const n=document.getElementById('r-nombre').value.trim();
+  const e=document.getElementById('r-edad').value;
+  const g=document.getElementById('r-grado').value;
+  const es=document.getElementById('r-escuela').value.trim();
+  const s=document.getElementById('r-socio').value;
+  if(!n||!e||!g||!es||!s){toast('Completa todos los campos obligatorios');return;}
+  alumno={nombre:n,edad:e,grado:g,escuela:es,socio:s,ideaInicial:document.getElementById('r-idea').value.trim()};
+  respuestas={};bloqueActual=0;
+  renderBloque();
+  ir('p-test');
+}
+
+function renderSteps(){
+  const sw=document.getElementById('steps-wrap');
+  sw.innerHTML=BLOQUES.map((b,i)=>`<div class="step-dot ${i<bloqueActual?'done':i===bloqueActual?'activo':''}"></div>`).join('');
+}
+
+function renderBloque(){
+  const bloque=BLOQUES[bloqueActual];
+  const offset=getOffset(bloqueActual);
+  const totalResp=Object.keys(respuestas).length;
+  const totalQ=60;
+  const pct=Math.round(totalResp/totalQ*100);
+  document.getElementById('prog-lbl').textContent=`Bloque ${bloqueActual+1} de ${BLOQUES.length} — ${bloque.titulo.split('—')[1].trim()}`;
+  document.getElementById('prog-pct').textContent=pct+'%';
+  document.getElementById('prog-fill').style.width=pct+'%';
+  renderSteps();
+  document.getElementById('btn-ant').disabled=bloqueActual===0;
+  document.getElementById('btn-sig').textContent=bloqueActual===BLOQUES.length-1?'Ver mis resultados ✓':'Siguiente bloque →';
+  document.getElementById('alerta').style.display='none';
+
+  let html=`<div class="tipo-banner" style="background:${bloque.colorL}">
+    <div class="tipo-icon" style="background:${bloque.color};color:#fff">📝</div>
+    <div class="tipo-info" style="color:${bloque.color}">
+      <h3>${bloque.titulo}</h3>
+      <p>${bloque.descripcion}</p>
+    </div>
+  </div>`;
+
+  bloque.preguntas.forEach((p,i)=>{
+    const idx=offset+i;
+    const resp=respuestas[idx];
+    html+=`<div class="pregunta-wrap"><div class="pregunta-card${resp!==undefined?' respondida':''}" id="pc-${idx}">`;
+    html+=`<div class="pregunta-meta"><span class="pregunta-num">${idx+1}/60</span>`;
+    const tipoLabel={likert:'Escala',situacional:'Situación',forzada:'Elige uno'}[p.fmt]||'';
+    html+=`<span class="pregunta-tipo-badge" style="background:${bloque.colorL};color:${bloque.color}">${tipoLabel}</span></div>`;
+
+    if(p.fmt==='likert'){
+      html+=`<div class="pregunta-texto">${p.texto}</div>`;
+      html+=`<div class="likert-wrap">`;
+      ['1','2','3','4','5'].forEach((v,vi)=>{
+        const lbls=['Nada','Poco','Neutral','Sí','Totalmente'];
+        const sel=resp===parseInt(v);
+        const selStyle=sel?`background:${bloque.color};border-color:${bloque.color}`:``;
+        html+=`<button class="likert-btn${sel?' sel':''}" style="${selStyle}" onclick="marcarLikert(${idx},${v},'${bloque.color}')">
+          <span class="likert-num">${v}</span>
+          <span class="likert-lbl">${lbls[vi]}</span>
+        </button>`;
+      });
+      html+=`</div>`;
+    } else if(p.fmt==='situacional'){
+      html+=`<div class="pregunta-situacion">${p.contexto}</div>`;
+      html+=`<div class="pregunta-texto">${p.texto}</div>`;
+      html+=`<div class="opciones-lista">`;
+      p.opciones.forEach((op,oi)=>{
+        const sel=resp===oi;
+        const selStyle=sel?`background:${bloque.colorL};border-color:${bloque.color};color:${bloque.color}`:``;
+        html+=`<button class="opcion-multi${sel?' sel':''}" style="${selStyle}" onclick="marcarMulti(${idx},${oi},'${bloque.color}','${bloque.colorL}')">${op.txt}</button>`;
+      });
+      html+=`</div>`;
+    } else if(p.fmt==='forzada'){
+      html+=`<div class="pregunta-texto">${p.texto}</div>`;
+      html+=`<div class="pares-wrap">`;
+      p.opciones.forEach((op,oi)=>{
+        const sel=resp===oi;
+        const selStyle=sel?`background:${bloque.colorL};border-color:${bloque.color}`:``;
+        const letraStyle=sel?`background:${bloque.color};color:#fff`:``;
+        html+=`<button class="par-opcion${sel?' sel':''}" style="${selStyle}" onclick="marcarMulti(${idx},${oi},'${bloque.color}','${bloque.colorL}')">
+          <div class="par-letra" style="${letraStyle}">${['A','B','C','D'][oi]}</div>
+          <span>${op.txt}</span>
+        </button>`;
+      });
+      html+=`</div>`;
+    }
+    html+=`</div></div>`;
+  });
+
+  document.getElementById('contenido-test').innerHTML=html;
+  window.scrollTo(0,0);
+}
+
+function marcarLikert(idx,val,color){
+  respuestas[idx]=parseInt(val);
+  const card=document.getElementById(`pc-${idx}`);
+  card.querySelectorAll('.likert-btn').forEach(b=>{
+    b.classList.remove('sel');
+    b.style.background='';b.style.borderColor='';
+  });
+  const btns=card.querySelectorAll('.likert-btn');
+  btns[val-1].classList.add('sel');
+  btns[val-1].style.background=color;
+  btns[val-1].style.borderColor=color;
+  card.classList.add('respondida');
+  actualizarProg();
+}
+
+function marcarMulti(idx,oi,color,colorL){
+  respuestas[idx]=oi;
+  const card=document.getElementById(`pc-${idx}`);
+  card.querySelectorAll('.opcion-multi,.par-opcion').forEach(b=>{
+    b.classList.remove('sel');
+    b.style.background='';b.style.borderColor='';b.style.color='';
+    const letra=b.querySelector('.par-letra');
+    if(letra){letra.style.background='';letra.style.color='';}
+  });
+  const btns=card.querySelectorAll('.opcion-multi,.par-opcion');
+  btns[oi].classList.add('sel');
+  btns[oi].style.background=colorL;
+  btns[oi].style.borderColor=color;
+  btns[oi].style.color=color;
+  const letra=btns[oi].querySelector('.par-letra');
+  if(letra){letra.style.background=color;letra.style.color='#fff';}
+  card.classList.add('respondida');
+  actualizarProg();
+}
+
+function actualizarProg(){
+  const total=60;
+  const resp=Object.keys(respuestas).length;
+  const pct=Math.round(resp/total*100);
+  document.getElementById('prog-fill').style.width=pct+'%';
+  document.getElementById('prog-pct').textContent=pct+'%';
+}
+
+function anterior(){if(bloqueActual>0){bloqueActual--;renderBloque();}}
+
+function siguiente(){
+  const bloque=BLOQUES[bloqueActual];
+  const offset=getOffset(bloqueActual);
+  const sinResp=bloque.preguntas.some((_,i)=>respuestas[offset+i]===undefined);
+  if(sinResp){
+    document.getElementById('alerta').style.display='block';
+    document.getElementById('alerta').scrollIntoView({behavior:'smooth'});
+    return;
+  }
+  if(bloqueActual<BLOQUES.length-1){bloqueActual++;renderBloque();}
+  else{calcular();}
+}
+
+/* ─── CÁLCULO DE RESULTADOS ─── */
+function calcular(){
+  // Acumular puntos por tipo
+  const puntos={R:0,I:0,A:0,S:0,E:0,C:0};
+  const maxPuntos={R:0,I:0,A:0,S:0,E:0,C:0};
+  let honestidad=3;let claridad=3;
+
+  BLOQUES.forEach((bloque,bi)=>{
+    const offset=getOffset(bi);
+    bloque.preguntas.forEach((p,i)=>{
+      const resp=respuestas[offset+i];
+      if(resp===undefined)return;
+
+      if(p.fmt==='likert'){
+        // Para likert de validación, cross-check
+        const tipo=p.tipo.replace('_val','');
+        if(puntos[tipo]!==undefined){
+          puntos[tipo]+=resp;
+          maxPuntos[tipo]+=5;
+        }
+      } else if(p.fmt==='situacional'||p.fmt==='forzada'){
+        const opcion=p.opciones[resp];
+        if(!opcion)return;
+        if(opcion.val.honesto!==undefined){honestidad=opcion.val.honesto;return;}
+        if(opcion.val.claridad!==undefined){claridad=opcion.val.claridad;return;}
+        Object.entries(opcion.val).forEach(([t,v])=>{
+          if(puntos[t]!==undefined){
+            puntos[t]+=v;
+            maxPuntos[t]+=5;
+          }
+        });
+      }
+    });
+  });
+
+  // Normalizar a escala 0-100
+  const normalizado={};
+  Object.keys(puntos).forEach(t=>{
+    normalizado[t]=maxPuntos[t]>0?Math.round(puntos[t]/maxPuntos[t]*100):0;
+  });
+
+  // Detectar inconsistencias (validación cruzada)
+  // Comparar q1-q6 (intereses) vs q49-q54 (validación)
+  const inconsistencias=[];
+  const PARES_VAL=[
+    {tipo:'R',q_interes:'q1',q_val:'q49'},
+    {tipo:'I',q_interes:'q2',q_val:'q50'},
+    {tipo:'A',q_interes:'q3',q_val:'q51'},
+    {tipo:'S',q_interes:'q4',q_val:'q52'},
+    {tipo:'E',q_interes:'q5',q_val:'q53'},
+    {tipo:'C',q_interes:'q6',q_val:'q54'},
+  ];
+  PARES_VAL.forEach(par=>{
+    const idxI=BLOQUES[0].preguntas.findIndex(p=>p.id===par.q_interes);
+    const b4=BLOQUES[4];
+    const idxV=b4.preguntas.findIndex(p=>p.id===par.q_val);
+    const respI=respuestas[idxI];
+    const respV=respuestas[getOffset(4)+idxV];
+    if(respI!==undefined&&respV!==undefined){
+      const diff=Math.abs(respI-respV);
+      if(diff>=3)inconsistencias.push({tipo:par.tipo,nombre:TIPOS[par.tipo].n,diff});
+    }
+  });
+
+  // Ordenar
+  const ordenado=Object.entries(normalizado).sort((a,b)=>b[1]-a[1]);
+  const [t1,t2,t3]=[ordenado[0][0],ordenado[1][0],ordenado[2][0]];
+  const total=Object.values(normalizado).reduce((a,b)=>a+b,0);
+
+  const resultado={
+    ...alumno,
+    fecha:new Date().toLocaleDateString('es-MX'),
+    puntos,normalizado,ordenado,t1,t2,t3,total,
+    honestidad,claridad,inconsistencias,
+    id:Date.now()
+  };
+
+  guardarResultado(resultado);
+  mostrarResultado(resultado,'p-resultado');
+  ir('p-resultado');
+}
+
+function mostrarResultado(r, panelId){
+  const isDetalle=panelId==='p-detalle';
+  const headerId=isDetalle?'det-header':'res-header-wrap';
+  const bodyId=isDetalle?'det-body':'res-body';
+
+  const {t1,t2,t3,normalizado,ordenado,inconsistencias,honestidad}=r;
+  const tp1=TIPOS[t1],tp2=TIPOS[t2],tp3=TIPOS[t3];
+
+  // HEADER
+  const headerHtml=`<div class="res-header">
+    <div class="res-orb"></div>
+    <div class="res-nombre">${r.nombre} · ${r.grado} · ${r.fecha}</div>
+    <div class="res-titulo">Tu perfil vocacional</div>
+    <div class="codigo-wrap">
+      <div class="codigo-letra" style="width:58px;height:58px;font-size:24px;border:2px solid rgba(255,255,255,0.3)">${t1}</div>
+      <div class="codigo-letra" style="width:48px;height:48px;font-size:20px">${t2}</div>
+      <div class="codigo-letra" style="width:40px;height:40px;font-size:16px">${t3}</div>
+    </div>
+    <div style="font-size:13px;opacity:0.8;position:relative">Código vocacional: ${t1}–${t2}–${t3}</div>
+    ${honestidad<=2?`<div class="alerta-consistencia">⚠️ Detectamos que en algunas preguntas podrías haber respondido lo que sonaba mejor en lugar de lo que realmente sientes. Tus resultados pueden ser menos precisos. Te recomendamos repetir el test con total honestidad.</div>`:''}
+    ${inconsistencias.length>0?`<div class="alerta-consistencia">📊 Detectamos respuestas inconsistentes en: ${inconsistencias.map(i=>i.nombre).join(', ')}. Esto puede significar que en esas áreas tienes sentimientos encontrados — ¡es totalmente normal!</div>`:''}
+  </div>`;
+  document.getElementById(headerId).innerHTML=headerHtml;
+
+  let html='';
+
+  // Stats
+  html+=`<div class="stat-grid">
+    <div class="stat-card"><div class="stat-lbl">Tipo dominante</div><div class="stat-val" style="color:${tp1.c}">${tp1.n}</div></div>
+    <div class="stat-card"><div class="stat-lbl">Perfil combinado</div><div class="stat-val">${t1}${t2}${t3}</div></div>
+    <div class="stat-card"><div class="stat-lbl">Claridad vocacional</div><div class="stat-val">${r.claridad>=4?'Alta':r.claridad>=2?'Media':'Baja'}</div></div>
+    <div class="stat-card"><div class="stat-lbl">Honestidad</div><div class="stat-val">${r.honestidad>=4?'Alta':r.honestidad>=3?'Media':'Revisar'}</div></div>
+  </div>`;
+
+  // Gráfica RIASEC
+  html+=`<div class="tarjeta"><div class="tarjeta-titulo">Tu perfil RIASEC completo</div>`;
+  ordenado.forEach(([t,v])=>{
+    const tp=TIPOS[t];
+    html+=`<div class="bar-row">
+      <div class="bar-label" style="color:${tp.c}">${tp.icon} ${t}</div>
+      <div class="bar-track"><div class="bar-fill" style="width:${v}%;background:${tp.c}"></div></div>
+      <div class="bar-val" style="color:${tp.c}">${v}%</div>
+    </div>`;
+  });
+  html+=`</div>`;
+
+  // Descripción tipo dominante
+  html+=`<div class="tarjeta" style="border-left:4px solid ${tp1.c}">
+    <div class="tarjeta-titulo">¿Qué significa ser tipo ${tp1.n}?</div>
+    <p style="font-size:13px;line-height:1.7;color:var(--texto);margin-bottom:10px">${tp1.desc}</p>
+    <div><strong style="font-size:11px;color:var(--texto2);text-transform:uppercase;letter-spacing:0.4px">Tus fortalezas clave</strong></div>
+    <div style="margin-top:6px">${tp1.fortalezas.map(f=>`<span class="fortaleza-pill" style="border-color:${tp1.c};color:${tp1.c};background:${tp1.l}">${f}</span>`).join('')}</div>
+  </div>`;
+
+  // Carreras recomendadas — con contexto socioeconómico
+  html+=`<div class="tarjeta"><div class="tarjeta-titulo">Carreras recomendadas para ti</div>`;
+
+  const socio=r.socio||'media';
+  if(socio==='baja'||socio==='media-baja'){
+    html+=`<div class="badge-alerta">💡 Basándonos en tu situación económica, también te mostramos opciones técnicas y con becas disponibles.</div>`;
+  }
+
+  [t1,t2].forEach(t=>{
+    const tp=TIPOS[t];
+    tp.carreras.forEach(car=>{
+      html+=`<div class="carrera-card" style="border-left-color:${tp.c};background:${tp.l}">
+        <div class="carrera-tipo" style="color:${tp.c}">${tp.icon} Perfil ${tp.n}</div>
+        <div class="carrera-nombre" style="color:${tp.c}">${car.n}</div>
+        <div class="carrera-lista">${car.lista}</div>
+        <div class="carrera-porque">Por qué encaja contigo: ${car.porque}</div>
+      </div>`;
+    });
+  });
+
+  if(socio==='baja'||socio==='media-baja'){
+    html+=`<div class="carrera-card" style="border-left-color:#0F7173;background:#D0ECF0">
+      <div class="carrera-tipo" style="color:#0F7173">💼 Opciones con alta empleabilidad y acceso</div>
+      <div class="carrera-nombre" style="color:#0F7173">Carreras técnicas y tecnológicas de corto plazo</div>
+      <div class="carrera-lista">Técnico Superior Universitario (TSU), carreras en CONALEP, CECyT, ICEST — alta demanda laboral, menor costo y tiempo. Busca becas Benito Juárez o apoyo del IMSS.</div>
+      <div class="carrera-porque">Permiten insertarte rápido al mercado laboral mientras defines si continuar con una licenciatura.</div>
+    </div>`;
+  }
+  html+=`</div>`;
+
+  // Perfil combinado — explicación
+  if(normalizado[t2]>=60){
+    html+=`<div class="tarjeta">
+      <div class="tarjeta-titulo">Tu perfil combinado ${t1}${t2} — oportunidades únicas</div>
+      <p style="font-size:13px;line-height:1.7;color:var(--texto)">Las personas con perfil combinado <strong>${t1}${t2}</strong> tienen ventajas únicas porque combinan lo mejor de dos mundos. Por ejemplo: un perfil <strong>IS</strong> (Investigativo-Social) apunta hacia medicina, psicología o investigación en bienestar humano. Un <strong>EA</strong> (Emprendedor-Artístico) apunta hacia agencias creativas, marketing o emprendimiento cultural. Investiga carreras que estén en la intersección de ambos perfiles.</p>
+    </div>`;
+  }
+
+  // Reflexión y próximos pasos
+  html+=`<div class="tarjeta">
+    <div class="tarjeta-titulo">Próximos pasos recomendados</div>
+    <div style="font-size:13px;line-height:1.9;color:var(--texto)">
+      <p>✅ <strong>Habla con 3 profesionales</strong> de tus carreras más interesantes — una conversación real vale más que mil páginas leídas.</p>
+      <p style="margin-top:6px">✅ <strong>Visita una feria de carreras</strong> o pide a tu orientador organizar una visita a una universidad.</p>
+      <p style="margin-top:6px">✅ <strong>Busca una actividad extracurricular</strong> relacionada con tu área — un taller, un club, o incluso YouTube.</p>
+      <p style="margin-top:6px">✅ <strong>Recuerda:</strong> este test es una herramienta de autoconocimiento. Es útil, pero no definitivo. Tus intereses pueden cambiar y eso está bien.</p>
+    </div>
+  </div>`;
+
+  // Nota de honestidad al final
+  html+=`<p style="font-size:11px;color:var(--texto2);text-align:center;line-height:1.7;margin-bottom:16px">Este test está basado en el modelo RIASEC de John L. Holland, con preguntas diseñadas para reducir el sesgo de deseabilidad social y la fatiga de respuesta. Los resultados son una guía, no un dictamen. La elección de carrera más importante es la que haces con información real, autoconocimiento honesto y acompañamiento de personas que te conocen.</p>`;
+
+  if(!isDetalle){
+    html+=`<button class="btn-accion btn-nuevo" onclick="nuevoTest()">Hacer otro test</button>`;
+    html+=`<button class="btn-accion btn-or" onclick="ir('p-orientador');renderLista()">Ver panel del orientador</button>`;
+  }
+
+  document.getElementById(bodyId).innerHTML=html;
+}
+
+function nuevoTest(){
+  respuestas={};bloqueActual=0;alumno={};
+  ['r-nombre','r-edad','r-escuela','r-idea'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
+  document.getElementById('r-grado').value='';
+  document.getElementById('r-socio').value='';
+  ir('p-splash');
+}
+
+function guardarResultado(r){
+  let lista=cargarLista();lista.push(r);
+  localStorage.setItem('vocatest_pro_v2',JSON.stringify(lista));
+}
+function cargarLista(){
+  try{return JSON.parse(localStorage.getItem('vocatest_pro_v2'))||[];}catch{return [];}
+}
+
+function renderLista(){
+  const lista=cargarLista();
+  const q=(document.getElementById('buscador')||{}).value||'';
+  const filtrada=lista.filter(e=>e.nombre.toLowerCase().includes(q.toLowerCase())||e.escuela.toLowerCase().includes(q.toLowerCase()));
+  const el=document.getElementById('lista-est');
+  if(!el)return;
+  if(!filtrada.length){
+    el.innerHTML=`<div class="badge-empty"><div style="font-size:48px;margin-bottom:12px">📋</div><p style="font-size:14px;line-height:1.6">Aún no hay estudiantes evaluados.<br>Aplica el test a un alumno para ver resultados aquí.</p></div>`;
+    return;
+  }
+  el.innerHTML=filtrada.slice().reverse().map(e=>{
+    const tp=TIPOS[e.t1]||{c:'#333',n:'?'};
+    const ini=e.nombre.split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
+    const incAlert=e.inconsistencias&&e.inconsistencias.length>0?`<div class="alerta-inc-or">⚠️ ${e.inconsistencias.length} inconsistencia(s) detectada(s)</div>`:'';
+    return `<div class="est-item" onclick="verDetalle(${e.id})">
+      <div class="est-avatar">${ini}</div>
+      <div class="est-info">
+        <div class="est-nombre">${e.nombre}</div>
+        <div class="est-meta">${e.grado} · ${e.escuela} · ${e.fecha}</div>
+        ${incAlert}
+      </div>
+      <div class="est-codigo" style="color:${tp.c}">${e.t1}${e.t2}${e.t3}</div>
+    </div>`;
+  }).join('');
+}
+
+function verDetalle(id){
+  const lista=cargarLista();
+  const est=lista.find(e=>e.id===id);
+  if(!est)return;
+  estDetalle=est;
+  document.getElementById('det-titulo').textContent=est.nombre;
+  mostrarResultado(est,'p-detalle');
+  ir('p-detalle');
+}
+
+function eliminarEst(){
+  if(!estDetalle)return;
+  if(!confirm('¿Eliminar el registro de '+estDetalle.nombre+'?'))return;
+  let lista=cargarLista();
+  lista=lista.filter(e=>e.id!==estDetalle.id);
+  localStorage.setItem('vocatest_pro_v2',JSON.stringify(lista));
+  toast('Registro eliminado');
+  ir('p-orientador');renderLista();
+}
+
+function tabOr(tab,el){
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('activo'));
+  el.classList.add('activo');
+  document.getElementById('tab-lista').style.display=tab==='lista'?'block':'none';
+  document.getElementById('tab-stats').style.display=tab==='stats'?'block':'none';
+  if(tab==='lista')renderLista();else renderStats();
+}
+
+function renderStats(){
+  const lista=cargarLista();
+  const el=document.getElementById('stats-or');
+  if(!lista.length){el.innerHTML=`<div class="badge-empty"><div style="font-size:48px">📊</div><p style="font-size:14px;margin-top:12px">Sin datos aún.</p></div>`;return;}
+  const conteos={R:0,I:0,A:0,S:0,E:0,C:0};
+  let inconsistTotal=0;let honestoTotal=0;
+  lista.forEach(e=>{if(e.t1&&conteos[e.t1]!==undefined)conteos[e.t1]++;if(e.inconsistencias)inconsistTotal+=e.inconsistencias.length;honestoTotal+=e.honestidad||3;});
+  const max=Math.max(...Object.values(conteos))||1;
+  let html=`<div class="tarjeta"><div class="tarjeta-titulo">Resumen del grupo — ${lista.length} estudiantes</div>`;
+  Object.entries(conteos).sort((a,b)=>b[1]-a[1]).forEach(([t,v])=>{
+    const tp=TIPOS[t];
+    const pct=Math.round(v/max*100);
+    html+=`<div class="bar-row"><div class="bar-label" style="color:${tp.c};font-size:11px">${tp.icon} ${tp.n}</div><div class="bar-track"><div class="bar-fill" style="width:${pct}%;background:${tp.c}"></div></div><div class="bar-val" style="color:${tp.c}">${v}</div></div>`;
+  });
+  const promHonest=Math.round(honestoTotal/lista.length*10)/10;
+  html+=`<div style="border-top:1px solid var(--gris2);margin-top:10px;padding-top:10px;font-size:13px;color:var(--texto2)">
+    Promedio de honestidad declarada: <strong>${promHonest}/5</strong><br>
+    Total de inconsistencias detectadas: <strong>${inconsistTotal}</strong>
+    ${inconsistTotal>lista.length?'<br><span style="color:var(--naranja);font-size:12px">⚠️ Nivel de inconsistencia alto — considera re-aplicar el test con instrucciones más claras.</span>':''}
+  </div>`;
+  html+=`</div>`;
+  el.innerHTML=html;
+}
+
+/* ─── SISTEMA DE PIN ─── */
+const PIN_KEY = 'vocatest_pin';
+const INTENTOS_KEY = 'vocatest_intentos';
+const BLOQUEO_KEY = 'vocatest_bloqueo';
+const MAX_INTENTOS = 5;
+const BLOQUEO_MS = 5 * 60 * 1000; // 5 minutos
+
+let pinActual = '';
+let modoPin = 'verificar'; // 'crear' | 'verificar' | 'cambiar_old' | 'cambiar_new'
+let pinNuevoTemp = '';
+
+function abrirPin() {
+  const pinGuardado = localStorage.getItem(PIN_KEY);
+  modoPin = pinGuardado ? 'verificar' : 'crear';
+  pinActual = '';
+  pinNuevoTemp = '';
+  renderPin();
+  ir('p-pin');
+}
+
+function renderPin() {
+  // Verificar bloqueo
+  const bloqueo = parseInt(localStorage.getItem(BLOQUEO_KEY) || '0');
+  const ahora = Date.now();
+  if (bloqueo > ahora) {
+    const mins = Math.ceil((bloqueo - ahora) / 60000);
+    document.getElementById('pin-subtitulo').textContent = `Demasiados intentos fallidos. Espera ${mins} minuto(s).`;
+    document.getElementById('pin-teclado').innerHTML = '';
+    document.getElementById('pin-dots').innerHTML = '';
+    document.getElementById('pin-ayuda').textContent = '';
+    return;
+  }
+
+  // Subtítulo según modo
+  const subtitulos = {
+    crear: 'Primera vez. Elige un PIN de 6 dígitos para proteger el panel.',
+    verificar: 'Ingresa el PIN de 6 dígitos para acceder.',
+    cambiar_old: 'Ingresa tu PIN actual para cambiarlo.',
+    cambiar_new: 'Elige un nuevo PIN de 6 dígitos.',
+  };
+  document.getElementById('pin-subtitulo').textContent = subtitulos[modoPin] || '';
+  document.getElementById('pin-error').style.display = 'none';
+
+  // Ayuda
+  const ayudas = {
+    crear: 'Este PIN protege el panel del orientador. Compártelo solo con docentes autorizados.',
+    verificar: '',
+    cambiar_old: '',
+    cambiar_new: 'Confirma que recuerdas el nuevo PIN antes de guardarlo.',
+  };
+  document.getElementById('pin-ayuda').textContent = ayudas[modoPin] || '';
+
+  renderDots();
+  renderTeclado();
+}
+
+function renderDots() {
+  const el = document.getElementById('pin-dots');
+  el.innerHTML = Array.from({length:6}).map((_,i) => {
+    const filled = i < pinActual.length;
+    return `<div style="width:18px;height:18px;border-radius:50%;border:2px solid var(--acento2);background:${filled?'var(--acento2)':'transparent'};transition:background .15s"></div>`;
+  }).join('');
+}
+
+function renderTeclado() {
+  const el = document.getElementById('pin-teclado');
+  const nums = ['1','2','3','4','5','6','7','8','9','','0','⌫'];
+  el.innerHTML = nums.map(n => {
+    if(n === '') return '<div></div>';
+    const esEliminar = n === '⌫';
+    return `<button onclick="teclaPin('${n}')" style="
+      padding:18px 0;font-size:${esEliminar?'20px':'22px'};font-weight:600;
+      border:1.5px solid var(--gris2);border-radius:var(--radio);
+      background:var(--blanco);color:${esEliminar?'var(--acento)':'var(--texto)'};
+      cursor:pointer;transition:background .1s;width:100%;
+    " ontouchstart="this.style.background='var(--gris)'" ontouchend="this.style.background='var(--blanco)'">${n}</button>`;
+  }).join('');
+}
+
+function teclaPin(tecla) {
+  // Verificar bloqueo
+  const bloqueo = parseInt(localStorage.getItem(BLOQUEO_KEY) || '0');
+  if (bloqueo > Date.now()) { renderPin(); return; }
+
+  if (tecla === '⌫') {
+    pinActual = pinActual.slice(0, -1);
+    renderDots();
+    return;
+  }
+  if (pinActual.length >= 6) return;
+  pinActual += tecla;
+  renderDots();
+
+  if (pinActual.length === 6) {
+    setTimeout(() => procesarPin(), 200);
+  }
+}
+
+function procesarPin() {
+  const pinGuardado = localStorage.getItem(PIN_KEY);
+
+  if (modoPin === 'crear' || modoPin === 'cambiar_new') {
+    localStorage.setItem(PIN_KEY, pinActual);
+    localStorage.removeItem(INTENTOS_KEY);
+    localStorage.removeItem(BLOQUEO_KEY);
+    toast(modoPin === 'crear' ? '✅ PIN creado correctamente' : '✅ PIN actualizado');
+    ir('p-orientador');
+    renderLista();
+    return;
+  }
+
+  if (modoPin === 'verificar' || modoPin === 'cambiar_old') {
+    if (pinActual === pinGuardado) {
+      localStorage.removeItem(INTENTOS_KEY);
+      localStorage.removeItem(BLOQUEO_KEY);
+      if (modoPin === 'cambiar_old') {
+        modoPin = 'cambiar_new';
+        pinActual = '';
+        renderPin();
+      } else {
+        ir('p-orientador');
+        renderLista();
+      }
+    } else {
+      // Contar intentos fallidos
+      let intentos = parseInt(localStorage.getItem(INTENTOS_KEY) || '0') + 1;
+      localStorage.setItem(INTENTOS_KEY, intentos);
+      if (intentos >= MAX_INTENTOS) {
+        localStorage.setItem(BLOQUEO_KEY, Date.now() + BLOQUEO_MS);
+        localStorage.removeItem(INTENTOS_KEY);
+        renderPin();
+        return;
+      }
+      const restantes = MAX_INTENTOS - intentos;
+      document.getElementById('pin-error').textContent = `PIN incorrecto. ${restantes} intento(s) restante(s).`;
+      document.getElementById('pin-error').style.display = 'block';
+      pinActual = '';
+      renderDots();
+    }
+  }
+}
+
+function cambiarPin() {
+  modoPin = 'cambiar_old';
+  pinActual = '';
+  renderPin();
+  ir('p-pin');
+}
+
+
+renderLista();
+</script>
+</body>
+</html>
